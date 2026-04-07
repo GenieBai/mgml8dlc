@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>苏醒</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #000000;
+            --fg: #e0e0e0;
+            --accent: #a08050;
+            --border: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--fg);
+            font-family: 'Noto Serif SC', serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .text-line {
+            font-size: 1.6rem;
+            line-height: 2.2;
+            letter-spacing: 0.15em;
+            min-height: 2.2em;
+            opacity: 0;
+        }
+
+        .text-line.visible {
+            opacity: 1;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background: var(--fg);
+            margin-left: 4px;
+            animation: blink 0.7s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 45% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .choices {
+            margin-top: 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .choices.visible {
+            opacity: 1;
+        }
+
+        .choice-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--fg);
+            padding: 1rem 2.5rem;
+            font-family: inherit;
+            font-size: 1.1rem;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .choice-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(160, 128, 80, 0.05);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .cursor { animation: none; opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p class="text-line" id="line1"></p>
+        <p class="text-line" id="line2"></p>
+        <p class="text-line" id="line3"></p>
+        <div class="choices" id="choices">
+            <button class="choice-btn" onclick="location.href='https://geniebai.github.io/mgml8dlc/death1.html'">大声呼救</button>
+            <button class="choice-btn" onclick="location.href='https://geniebai.github.io/mgml8dlc/option1.html'">先冷静下来</button>
+        </div>
+    </div>
+
+    <script>
+        async function typeText(element, text, speed) {
+            element.classList.add('visible');
+            const cursor = document.createElement('span');
+            cursor.className = 'cursor';
+            element.appendChild(cursor);
+
+            for (let i = 0; i < text.length; i++) {
+                const char = document.createElement('span');
+                char.textContent = text[i];
+                element.insertBefore(char, cursor);
+                await new Promise(r => setTimeout(r, speed));
+            }
+
+            cursor.remove();
+        }
+
+        async function main() {
+            const lines = [
+                { el: document.getElementById('line1'), text: '好黑' },
+                { el: document.getElementById('line2'), text: '什么也看不到' },
+                { el: document.getElementById('line3'), text: '我是瞎了吗' }
+            ];
+
+            await new Promise(r => setTimeout(r, 500));
+
+            for (const line of lines) {
+                await typeText(line.el, line.text, 120);
+                await new Promise(r => setTimeout(r, 500));
+            }
+
+            // 选项直接出现
+            await new Promise(r => setTimeout(r, 500));
+            document.getElementById('choices').classList.add('visible');
+        }
+
+        document.addEventListener('DOMContentLoaded', main);
+    </script>
+</body>
+</html>

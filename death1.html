@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>死亡1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #000000;
+            --fg: #c0c0c0;
+            --death: #8b0000;
+            --border: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--fg);
+            font-family: 'Noto Serif SC', serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .text-line {
+            font-size: 1.6rem;
+            line-height: 2.2;
+            letter-spacing: 0.15em;
+            min-height: 2.2em;
+            opacity: 0;
+        }
+
+        .text-line.visible {
+            opacity: 1;
+        }
+
+        .text-line.death {
+            color: var(--death);
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background: var(--fg);
+            margin-left: 4px;
+            animation: blink 0.7s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 45% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .restart-btn {
+            margin-top: 3rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--fg);
+            padding: 1rem 2.5rem;
+            font-family: inherit;
+            font-size: 1rem;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn.visible {
+            opacity: 1;
+        }
+
+        .restart-btn:hover {
+            border-color: var(--death);
+            color: var(--death);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .cursor { animation: none; opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <audio id="bgAudio" preload="auto">
+        <source src="Sculk_Shrieker_shriek5.ogg.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <p class="text-line" id="line1"></p>
+        <p class="text-line" id="line2"></p>
+        <p class="text-line" id="line3"></p>
+        <p class="text-line death" id="line4"></p>
+        <button class="restart-btn" id="restartBtn" onclick="location.href='https://geniebai.github.io/mgml8dlc/index.html'">重新开始</button>
+    </div>
+
+    <script>
+        // 播放音频 (-30dB ≈ 0.03 线性音量)
+        function playAudio() {
+            const audio = document.getElementById('bgAudio');
+            if (audio) {
+                audio.volume = 0.03;
+                audio.play().catch(function(e) {
+                    console.log('自动播放被阻止，等待用户交互');
+                });
+            }
+        }
+
+        // 打字机效果 - 逐字显示
+        async function typeText(element, text, speed) {
+            element.classList.add('visible');
+            const cursor = document.createElement('span');
+            cursor.className = 'cursor';
+            element.appendChild(cursor);
+
+            for (let i = 0; i < text.length; i++) {
+                const char = document.createElement('span');
+                char.textContent = text[i];
+                element.insertBefore(char, cursor);
+                await new Promise(function(r) { setTimeout(r, speed); });
+            }
+
+            cursor.remove();
+        }
+
+        // 主流程
+        async function main() {
+            playAudio();
+
+            const lines = [
+                { el: document.getElementById('line1'), text: '比光线和希望更先到的' },
+                { el: document.getElementById('line2'), text: '是未知的声响' },
+                { el: document.getElementById('line3'), text: '来不及搞清楚到底发生了什么' },
+                { el: document.getElementById('line4'), text: '你就死于非命了' }
+            ];
+
+            await new Promise(function(r) { setTimeout(r, 500); });
+
+            for (let i = 0; i < lines.length; i++) {
+                await typeText(lines[i].el, lines[i].text, 120);
+                await new Promise(function(r) { setTimeout(r, 500); });
+            }
+
+            await new Promise(function(r) { setTimeout(r, 500); });
+            document.getElementById('restartBtn').classList.add('visible');
+        }
+
+        // 处理浏览器自动播放限制
+        document.addEventListener('click', function initAudio() {
+            playAudio();
+        }, { once: true });
+
+        document.addEventListener('DOMContentLoaded', main);
+    </script>
+</body>
+</html>
