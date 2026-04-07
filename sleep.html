@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>死亡1</title>
+    <title>一切的开始</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #000000;
-            --fg: #c0c0c0;
-            --death: #8b0000;
-            --border: #333;
+            --fg: #e0e0e0;
+            --accent: #a08050;
         }
 
         * {
@@ -46,12 +45,6 @@
             opacity: 1;
         }
 
-        .text-line.death {
-            color: var(--death);
-            font-size: 1.3rem;
-            margin-top: 1.5rem;
-        }
-
         .cursor {
             display: inline-block;
             width: 2px;
@@ -67,60 +60,62 @@
             50%, 100% { opacity: 0; }
         }
 
-        .restart-btn {
+        .awaken-btn {
             margin-top: 3rem;
             background: transparent;
-            border: 1px solid var(--border);
+            border: none;
             color: var(--fg);
-            padding: 1rem 2.5rem;
             font-family: inherit;
-            font-size: 1rem;
-            letter-spacing: 0.2em;
+            font-size: 1.8rem;
+            letter-spacing: 0.4em;
             cursor: pointer;
             opacity: 0;
-            transition: all 0.3s ease;
+            transition: opacity 0.5s ease;
         }
 
-        .restart-btn.visible {
+        .awaken-btn.visible {
             opacity: 1;
         }
 
-        .restart-btn:hover {
-            border-color: var(--death);
-            color: var(--death);
+        .awaken-btn .char {
+            display: inline-block;
+            filter: blur(6px);
+            opacity: 0;
+            animation: focusChar 0.8s ease forwards;
+        }
+
+        @keyframes focusChar {
+            0% {
+                filter: blur(8px);
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            100% {
+                filter: blur(0);
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .awaken-btn:hover {
+            color: var(--accent);
         }
 
         @media (prefers-reduced-motion: reduce) {
             .cursor { animation: none; opacity: 1; }
+            .awaken-btn .char { animation: none; filter: none; opacity: 1; }
         }
     </style>
 </head>
 <body>
-    <audio id="bgAudio" preload="auto">
-        <source src="Sculk_Shrieker_shriek5.ogg.mp3" type="audio/mpeg">
-    </audio>
-
     <div class="container">
         <p class="text-line" id="line1"></p>
         <p class="text-line" id="line2"></p>
         <p class="text-line" id="line3"></p>
-        <p class="text-line death" id="line4"></p>
-        <button class="restart-btn" id="restartBtn" onclick="location.href='https://geniebai.github.io/mgml8dlc/sleep.html'">重新开始</button>
+        <button class="awaken-btn" id="awakenBtn" onclick="location.href='https://geniebai.github.io/mgml8dlc/wake'"></button>
     </div>
 
     <script>
-        // 播放音频 (-30dB ≈ 0.03 线性音量)
-        function playAudio() {
-            const audio = document.getElementById('bgAudio');
-            if (audio) {
-                audio.volume = 0.03;
-                audio.play().catch(function(e) {
-                    console.log('自动播放被阻止，等待用户交互');
-                });
-            }
-        }
-
-        // 打字机效果 - 逐字显示
         async function typeText(element, text, speed) {
             element.classList.add('visible');
             const cursor = document.createElement('span');
@@ -131,38 +126,41 @@
                 const char = document.createElement('span');
                 char.textContent = text[i];
                 element.insertBefore(char, cursor);
-                await new Promise(function(r) { setTimeout(r, speed); });
+                await new Promise(r => setTimeout(r, speed));
             }
 
             cursor.remove();
         }
 
-        // 主流程
-        async function main() {
-            playAudio();
-
-            const lines = [
-                { el: document.getElementById('line1'), text: '比光线和希望更先到的' },
-                { el: document.getElementById('line2'), text: '是未知的声响' },
-                { el: document.getElementById('line3'), text: '来不及搞清楚到底发生了什么' },
-                { el: document.getElementById('line4'), text: '你就死于非命了' }
-            ];
-
-            await new Promise(function(r) { setTimeout(r, 500); });
-
-            for (let i = 0; i < lines.length; i++) {
-                await typeText(lines[i].el, lines[i].text, 120);
-                await new Promise(function(r) { setTimeout(r, 500); });
+        async function showBlurButton(button, text, charDelay) {
+            button.classList.add('visible');
+            
+            for (let i = 0; i < text.length; i++) {
+                const char = document.createElement('span');
+                char.className = 'char';
+                char.textContent = text[i];
+                button.appendChild(char);
+                await new Promise(r => setTimeout(r, charDelay));
             }
-
-            await new Promise(function(r) { setTimeout(r, 500); });
-            document.getElementById('restartBtn').classList.add('visible');
         }
 
-        // 处理浏览器自动播放限制
-        document.addEventListener('click', function initAudio() {
-            playAudio();
-        }, { once: true });
+        async function main() {
+            const lines = [
+                { el: document.getElementById('line1'), text: '头好疼' },
+                { el: document.getElementById('line2'), text: '什么都想不起来' },
+                { el: document.getElementById('line3'), text: '我在哪' }
+            ];
+
+            await new Promise(r => setTimeout(r, 500));
+
+            for (const line of lines) {
+                await typeText(line.el, line.text, 120);
+                await new Promise(r => setTimeout(r, 500));
+            }
+
+            await new Promise(r => setTimeout(r, 500));
+            await showBlurButton(document.getElementById('awakenBtn'), '苏醒', 200);
+        }
 
         document.addEventListener('DOMContentLoaded', main);
     </script>

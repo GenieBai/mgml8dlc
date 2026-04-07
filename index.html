@@ -3,166 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>一切的开始</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <title>游戏主页</title>
     <style>
-        :root {
-            --bg: #000000;
-            --fg: #e0e0e0;
-            --accent: #a08050;
-        }
-
-        * {
+        body, html {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--fg);
-            font-family: 'Noto Serif SC', serif;
-            min-height: 100vh;
+            width: 100%;
+            height: 100%;
+            background-color: #000; /* 背景全黑 */
+            color: #fff;
+            font-family: 'SimHei', 'Microsoft YaHei', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
 
         .container {
             text-align: center;
-            padding: 2rem;
+            padding: 20px;
+            max-width: 800px;
         }
 
-        .text-line {
-            font-size: 1.6rem;
-            line-height: 2.2;
-            letter-spacing: 0.15em;
-            min-height: 2.2em;
-            opacity: 0;
+        .title {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: #ff4444; /* 红色标题，营造恐怖氛围 */
+            text-shadow: 2px 2px 4px #000;
         }
 
-        .text-line.visible {
-            opacity: 1;
+        .notice {
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #333;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
         }
 
-        .cursor {
-            display: inline-block;
-            width: 2px;
-            height: 1.2em;
-            background: var(--fg);
-            margin-left: 4px;
-            animation: blink 0.7s infinite;
-            vertical-align: middle;
-        }
-
-        @keyframes blink {
-            0%, 45% { opacity: 1; }
-            50%, 100% { opacity: 0; }
-        }
-
-        .awaken-btn {
-            margin-top: 3rem;
-            background: transparent;
+        .start-button {
+            padding: 15px 50px;
+            font-size: 1.5em;
+            background-color: #8b0000;
+            color: white;
             border: none;
-            color: var(--fg);
-            font-family: inherit;
-            font-size: 1.8rem;
-            letter-spacing: 0.4em;
+            border-radius: 5px;
             cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.5s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.7);
         }
 
-        .awaken-btn.visible {
-            opacity: 1;
+        .start-button:hover {
+            background-color: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.9);
+            transform: scale(1.05);
         }
 
-        .awaken-btn .char {
-            display: inline-block;
-            filter: blur(6px);
-            opacity: 0;
-            animation: focusChar 0.8s ease forwards;
-        }
-
-        @keyframes focusChar {
-            0% {
-                filter: blur(8px);
-                opacity: 0;
-                transform: translateY(-5px);
-            }
-            100% {
-                filter: blur(0);
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .awaken-btn:hover {
-            color: var(--accent);
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .cursor { animation: none; opacity: 1; }
-            .awaken-btn .char { animation: none; filter: none; opacity: 1; }
+        .start-button:active {
+            transform: scale(0.95);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <p class="text-line" id="line1"></p>
-        <p class="text-line" id="line2"></p>
-        <p class="text-line" id="line3"></p>
-        <button class="awaken-btn" id="awakenBtn" onclick="location.href='https://geniebai.github.io/mgml8dlc/wake'"></button>
+        <h1 class="title">欢迎进入游戏世界</h1>
+        <div class="notice">
+            <p><strong>声明</strong></p>
+            <p>目前本网站依旧为半成品，使用美术素材大多为视频内截图或公开游戏内素材。</p>
+            <p>游玩过程中存在部分恐怖音效，光效闪动等因素，请谨慎观看。</p>
+        </div>
+        <button class="start-button" onclick="location.href='https://geniebai.github.io/mgml8dlc/sleep'">开始游戏</button>
     </div>
 
     <script>
-        async function typeText(element, text, speed) {
-            element.classList.add('visible');
-            const cursor = document.createElement('span');
-            cursor.className = 'cursor';
-            element.appendChild(cursor);
-
-            for (let i = 0; i < text.length; i++) {
-                const char = document.createElement('span');
-                char.textContent = text[i];
-                element.insertBefore(char, cursor);
-                await new Promise(r => setTimeout(r, speed));
-            }
-
-            cursor.remove();
+        function startGame() {
+            // 这里跳转到序章页面，请根据实际文件名修改
+            window.location.href = '序章.html'; 
+            // 如果序章文件名不同，请替换成正确的路径，例如：
+            // window.location.href = 'prologue.html';
         }
-
-        async function showBlurButton(button, text, charDelay) {
-            button.classList.add('visible');
-            
-            for (let i = 0; i < text.length; i++) {
-                const char = document.createElement('span');
-                char.className = 'char';
-                char.textContent = text[i];
-                button.appendChild(char);
-                await new Promise(r => setTimeout(r, charDelay));
-            }
-        }
-
-        async function main() {
-            const lines = [
-                { el: document.getElementById('line1'), text: '头好疼' },
-                { el: document.getElementById('line2'), text: '什么都想不起来' },
-                { el: document.getElementById('line3'), text: '我在哪' }
-            ];
-
-            await new Promise(r => setTimeout(r, 500));
-
-            for (const line of lines) {
-                await typeText(line.el, line.text, 120);
-                await new Promise(r => setTimeout(r, 500));
-            }
-
-            await new Promise(r => setTimeout(r, 500));
-            await showBlurButton(document.getElementById('awakenBtn'), '苏醒', 200);
-        }
-
-        document.addEventListener('DOMContentLoaded', main);
     </script>
 </body>
 </html>
