@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一切的开始</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #000000;
+            --fg: #e0e0e0;
+            --accent: #a08050;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--fg);
+            font-family: 'Noto Serif SC', serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .text-line {
+            font-size: 1.6rem;
+            line-height: 2.2;
+            letter-spacing: 0.15em;
+            min-height: 2.2em;
+            opacity: 0;
+        }
+
+        .text-line.visible {
+            opacity: 1;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background: var(--fg);
+            margin-left: 4px;
+            animation: blink 0.7s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 45% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .awaken-btn {
+            margin-top: 3rem;
+            background: transparent;
+            border: none;
+            color: var(--fg);
+            font-family: inherit;
+            font-size: 1.8rem;
+            letter-spacing: 0.4em;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .awaken-btn.visible {
+            opacity: 1;
+        }
+
+        .awaken-btn .char {
+            display: inline-block;
+            filter: blur(6px);
+            opacity: 0;
+            animation: focusChar 0.8s ease forwards;
+        }
+
+        @keyframes focusChar {
+            0% {
+                filter: blur(8px);
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            100% {
+                filter: blur(0);
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .awaken-btn:hover {
+            color: var(--accent);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .cursor { animation: none; opacity: 1; }
+            .awaken-btn .char { animation: none; filter: none; opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p class="text-line" id="line1"></p>
+        <p class="text-line" id="line2"></p>
+        <p class="text-line" id="line3"></p>
+        <button class="awaken-btn" id="awakenBtn" onclick="location.href='https://geniebai.github.io/mgml8dlc/wake'"></button>
+    </div>
+
+    <script>
+        async function typeText(element, text, speed) {
+            element.classList.add('visible');
+            const cursor = document.createElement('span');
+            cursor.className = 'cursor';
+            element.appendChild(cursor);
+
+            for (let i = 0; i < text.length; i++) {
+                const char = document.createElement('span');
+                char.textContent = text[i];
+                element.insertBefore(char, cursor);
+                await new Promise(r => setTimeout(r, speed));
+            }
+
+            cursor.remove();
+        }
+
+        async function showBlurButton(button, text, charDelay) {
+            button.classList.add('visible');
+            
+            for (let i = 0; i < text.length; i++) {
+                const char = document.createElement('span');
+                char.className = 'char';
+                char.textContent = text[i];
+                button.appendChild(char);
+                await new Promise(r => setTimeout(r, charDelay));
+            }
+        }
+
+        async function main() {
+            const lines = [
+                { el: document.getElementById('line1'), text: '头好疼' },
+                { el: document.getElementById('line2'), text: '什么都想不起来' },
+                { el: document.getElementById('line3'), text: '我在哪' }
+            ];
+
+            await new Promise(r => setTimeout(r, 500));
+
+            for (const line of lines) {
+                await typeText(line.el, line.text, 120);
+                await new Promise(r => setTimeout(r, 500));
+            }
+
+            await new Promise(r => setTimeout(r, 500));
+            await showBlurButton(document.getElementById('awakenBtn'), '苏醒', 200);
+        }
+
+        document.addEventListener('DOMContentLoaded', main);
+    </script>
+</body>
+</html>
